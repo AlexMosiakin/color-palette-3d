@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Lato:wght@400;700&family=Montserrat:wght@100;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./style.css">
+    <title>Colors</title>
+</head>
+
+<body>
+
+    <div class="gl-canvas-wrapper">
+        <canvas id="myWebGLCanvas" width="640" height="480">Your browser does not support the canvas element</canvas>
+        <textarea spellcheck="false" cols="40" rows="10" class="code_input_vert" id="code_vert">
+            #version 300 es
+            precision highp float;
+            
+            in vec3 position;
+            in vec2 texcoord;
+            in vec3 normal;
+            
+            uniform mat4 projection;
+            uniform mat4 modelview;
+            uniform mat4 normalMat;
+            
+            
+            out vec2 tc;
+            out vec3 fn;
+            out vec3 vertPos;
+            
+            void main(){
+                tc = texcoord;
+                fn = vec3(normalMat * vec4(normal, 0.0));
+                vec4 vertPos4 = modelview * vec4(position, 1.0);
+                vertPos = vec3(vertPos4) / vertPos4.w;
+                gl_Position = projection * modelview * vec4(position, 1.0);
+            }
+        </textarea>
+        <p id="code_vert_error" class="error" style="width: 200px;"></p>
+      
+        <textarea spellcheck="false" cols="40" rows="10" class="code_input" id="code_frag"></textarea>
+        <p id="code_frag_error" class="error" style="width: 200px;"></p>
+        
+    </div>
+
+
+    <div class="app-wrapper">
+        <div class="pallete-header">
+            <h1>Таблица цветов</h1>
+        </div>
+        <div class="colors">
+
+            <div class="color-wrapper">
+                <p class="color-name cell">
+                    Цвет
+                </p>
+                <p class="color-name cell">
+                    Название
+                </p>
+                <p class="color-name cell">
+                    Тип
+                </p>
+                <p class="color-name cell">
+                    Код
+                </p>
+                <p class="color-name cell">
+                    Изменить
+                </p>
+                <p class="color-name cell">
+                    Удалить
+                </p>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="add-color-panel">
+                <button class="add-color-btn">Добавить цвет</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="open-add-container">
+        <div class="add-color-popup">
+            <button class="close-add">X</button>
+            <div class="color-inputs">
+                <input name="color-name" type="text" max-lenght="35" class="save-name" placeholder="Название цвета">
+                <select name="save-type" class="save-type">
+                    <option disabled value="">Тип</option>
+                    <option value="main">Main</option>
+                    <option value="primary">Primary</option>
+                    <option value="secondary">Secondary</option>
+                    <option value="base">Base</option>
+                </select>
+            </div>
+            <div class="color"></div>
+            <div class="color-hex-wrapper">
+                <span>Color: </span>
+                <span class="color-hex"></span>
+            </div>
+            <div class="sliders">
+                <span>Hue</span>
+                <input type="range" min="0" max="360" step="1" name="hue" class="hue-input" data-hue="0" />
+                <span>Brightness</span>
+                <input type="range" min="0" max="1" step="0.01" name="bright" class="bright-input" data-bright="0" />
+                <span>Saturation</span>
+                <input type="range" min="0" max="1" step="0.01" name="saturation" class="sat-input" data-sat="0" />
+            </div>
+            <button class="add-color submit-save">Добавить</button>
+        </div>
+    </div>
+
+    <div class="copy-container">
+        <div class="copy-popup">
+            <h3>Copy to clipboard!</h3>
+            <h4>&#128077;</h4>
+        </div>
+    </div>
+    <div class="save-container">
+        <div class="save-popup">
+            <button class="close-save">X</button>
+            <h4>Give a name to your pallete</h4>
+            <input type="text" max-lenght="35" class="save-name">
+            <button type="submit" class="submit-save">Save</button>
+        </div>
+    </div>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.1.1/chroma.min.js" integrity="sha512-RWI59o+PDXjPl3bakOf3k2ZbDtfvn/OU/ZKe6QmkE0V/ve7vYKEJe0RdkDueS+VkghBazP+1o4LKGON+pHUa5g==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js" integrity="sha512-RXf+QSDCUQs5uwRKaDoXt55jygZZm2V++WUZduaU/Ui/9EGp3f/2KZVahFZBKGH0s774sd3HmrhUy+SgOFQLVQ==" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="./app.js"></script>
+    <script type="text/javascript" src="./renderer.js"></script>
+    <script type="text/javascript" src="./sphere.js"></script>
+</body>
+
+</html>

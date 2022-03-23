@@ -1,0 +1,373 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Lato", sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+button {
+    font-family: "Poppins", sans-serif;
+}
+
+i,
+svg,
+path {
+    pointer-events: none;
+}
+
+.color{
+    border-radius: 0.25rem;
+    height: 200px;
+    width: 74.5%;
+}
+
+.colors {
+    color: rgb(212, 212, 212);
+
+}
+
+.color-wrapper {
+    display: grid;
+    grid-template-columns: repeat(6, calc(100% / 6));
+    position: relative;
+    overflow: hidden;
+}
+
+.color h2 {
+    font-size: 2rem;
+    cursor: pointer;
+}
+
+.sliders {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    width: 80%;
+    border-top-right-radius: 1rem;
+    border-top-left-radius: 1rem;
+    /*We are adding an adjustment class*/
+    transition: all 0.5s ease-in-out;
+    color: #fff;
+}
+
+.sliders button,
+.close-save,
+.close-library,
+.close-add,
+.close-change{
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 0.75rem;
+    border-top-left-radius: 1rem;
+    border-bottom-left-radius: 1rem;
+    border: none;
+    background: transparent;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.close-add{
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+}
+
+.controls {
+    display: flex;
+    flex-direction: column;
+}
+
+.panel {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    margin-top: auto;
+    padding: 30px 0;
+}
+
+.add-color-btn {
+    padding: 10px 68px;
+    border: 0.724561px solid #53CBF1;
+    border-radius: 100px;
+    color: #fff;
+    background: transparent;
+    cursor: pointer;
+    transition: 0.5s;
+}
+
+.add-color-btn:hover {
+    background: #53CBF1;
+}
+
+.add-color, .change-color-btn {
+    padding: 10px 68px;
+    border: 0.724561px solid #53CBF1;
+    border-radius: 100px;
+    color: #fff;
+    background: #53CBF1;
+    cursor: pointer;
+    transition: 0.5s;
+}
+
+.add-color:hover, .change-color-btn:hover {
+    background: transparent;
+}
+
+.change-color > svg > path{
+    transition: 0.5s;
+}
+.change-color:hover > svg > path{
+    stroke: #53CBF1;
+}
+
+.delete-color > svg > path, .delete-color > svg > rect{
+    transition: 0.5s;
+}
+
+.delete-color:hover > svg > path, .delete-color:hover > svg > rect{
+    stroke: #CA4C4C;
+    fill: #CA4C4C;
+}
+
+.panel p {
+    font-size: 1.2rem;
+}
+
+.library-panel,
+.generate-panel,
+.save-panel {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.adjust,
+.lock {
+    font-size: 2rem;
+    border: none;
+    background: none;
+    cursor: pointer;
+    margin: 2rem 0rem;
+}
+
+input[type="range"] {
+    -webkit-appearance: none;
+    margin: 1rem 0rem;
+    width: 100%;
+    position: relative;
+    border-radius: 1rem;
+    cursor: pointer;
+}
+
+.open-add-container,
+.open-change-container,
+.copy-container,
+.save-container,
+.library-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.5);
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none;
+    opacity: 0;
+    transition: all 0.5s ease-in-out;
+}
+
+.add-color-popup,
+.copy-popup,
+.save-popup,
+.library-popup {
+    padding: 2rem 0;
+    background: #313131;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    border-radius: 2rem;
+    transition: transform 0.5s ease;
+    transform: translateY(-2rem);
+    min-width: 30%;
+    min-height: 30vh;
+}
+
+.copy-popup h2,
+.save-popup h2,
+.library-popup h2 {
+    font-size: 2rem;
+    padding: 2rem;
+}
+
+.copy-popup h4,
+.save-popup h4,
+.library-popup h4 {
+    font-size: 2rem;
+}
+
+.open-add-container.active,
+.open-change-container.active,
+.copy-container.active,
+.save-container.active,
+.library-container.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.copy-popup.active,
+.save-popup.active,
+.library-popup.active {
+    transform: translateY(0rem);
+}
+
+.close-save,
+.close-library {
+    border-top-right-radius: 1rem;
+    border-bottom-left-radius: 1rem;
+    padding: 0.5rem;
+}
+
+.library-popup {
+    min-width: 40%;
+    padding: 1rem;
+    justify-content: flex-start;
+    overflow: scroll;
+    max-height: 50vh;
+}
+
+.custom-palette {
+    display: grid;
+    grid-template-columns: repeat(6, calc(100% / 6));
+    position: relative;
+    overflow: hidden;
+}
+
+.small-preview {
+    display: flex;
+    justify-content: center;
+}
+
+.small-preview div {
+    width: 41px;
+    height: 41px;
+}
+
+.pick-palette-btn {
+    cursor: pointer;
+    justify-content: center;
+}
+
+.app-wrapper{
+    min-width: 680px;
+    min-height: 380px;
+    background: #313131;
+    border-radius: 20px;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+}
+
+.pallete-header{
+    padding: 20px 0;
+}
+
+.pallete-header > h1{
+    font-size: 18px;
+    line-height: 24px;
+    text-align: center;
+}
+
+.color-wrapper > *{
+    padding: 0 15px 0 15px;
+    background: #424242;
+    font-size: 18px;
+    line-height: 22px;
+    border: 0.5px solid #313131;
+    display: flex;
+    align-items: center;
+    color: #fff;
+    height: 54px;
+}
+
+.custom-palette > *{
+    padding: 0 15px 0 15px;
+    background: rgb(66, 66, 66);
+    font-size: 11px;
+    line-height: 15px;
+    border: 0.5px solid rgb(49, 49, 49);
+    display: flex;
+    align-items: center;
+    font-weight: 400;
+    color: rgb(191, 191, 191);
+    height: 54px;
+}
+
+.color-hex-wrapper{
+    padding: 1rem 1rem 0 1rem;
+    width: 80%;
+    color: #fff;
+}
+
+.color-inputs{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 80%;
+    padding: 0 1rem 1rem 1rem;
+}
+
+.color-inputs > input, .color-inputs > select  {
+    padding: 0.5rem;
+    border-radius: 0.2rem;
+    border: 1px solid #5F5F5F;
+    background: #424242;
+    color: #fff;
+}
+
+.color-inputs > input::placeholder {
+    color: #fff;
+}
+
+.color-inputs > input:focus, .color-inputs > select:focus {
+    outline: none;
+}
+
+.submit-save.disable{
+    opacity: 0;
+    visibility: hidden;
+    position: absolute;
+    pointer-events: none;
+}
+
+.gl-canvas-wrapper{
+    padding: 70px 50px;
+    background: #313131;
+    border-radius: 20px;
+    min-width: 740px;
+    min-height: 500px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.gl-canvas-wrapper > *{
+    width: 100%;
+    height: 100%;
+}
+
+.code_input_vert, .code_input, .error{
+    display: none;
+}
