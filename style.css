@@ -371,3 +371,67 @@ input[type="range"] {
 .code_input_vert, .code_input, .error{
     display: none;
 }
+
+@media screen and (max-width:1600px) {
+    body{
+        flex-direction: column;
+    }
+    .gl-canvas-wrapper {
+        padding: 20px;
+        min-width: 680px;
+        min-height: 400px;
+    }
+
+    .add-color-popup, .copy-popup, .save-popup, .library-popup {
+        min-width: 450px;
+    }
+}
+
+@media screen and (max-width:800px) {
+.app-wrapper {
+    min-width: 100%;
+    max-width: 100%;
+    border-radius: 0px;
+}
+.gl-canvas-wrapper {
+    padding: 10px;
+    min-width: 100%;
+    min-height: 286px;
+    border-radius: 0px;
+}
+.pallete-header {
+    padding: 0 0 10px 0;
+}
+.pallete-header > h1 {
+    font-size: 16px;
+    line-height: 20px;
+}
+.add-color-popup, .copy-popup, .save-popup, .library-popup {
+    min-width: 90%;
+    transform: translateY(0rem);
+    border-radius: 0.5rem;
+    padding: 1rem 0;
+}
+.color-inputs, .color-hex-wrapper, .sliders {
+    width: 100%;
+}
+.color {
+    width: 90.5%;
+}
+.color-wrapper > * {
+    padding: 0 5px 0 5px;
+    font-size: 12px;
+    line-height: 16px;
+    height: 34px;
+}
+.custom-palette > * {
+    padding: 0 5px 0 5px;
+    font-size: 12px;
+    line-height: 16px;
+    height: 34px;
+}
+.small-preview div {
+    width: 21px;
+    height: 21px;
+}
+}

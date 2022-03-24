@@ -196,7 +196,7 @@ const closeSave = document.querySelector(".close-save");
 const saveContainer = document.querySelector(".open-add-container");
 const saveInputName = document.querySelector(".save-name");
 const saveInputType = document.querySelector(".save-type");
-const libraryContainer = document.querySelector(".colors");
+const libraryContainer = document.querySelector(".custom-palette-wrapper");
 const libraryBtn = document.querySelector(".library");
 const closeLibraryBtn = document.querySelector(".close-library");
 const openAddBtn = document.querySelector(".add-color-btn");
@@ -237,6 +237,70 @@ function closePalette(e) {
     saveContainer.classList.remove("active");
     popup.classList.add("remove");
 }
+
+libraryContainer.addEventListener(`dragstart`, (evt) => {
+    evt.target.classList.add(`selected`);
+});
+
+libraryContainer.addEventListener(`dragend`, (evt) => {
+    evt.target.classList.remove(`selected`);
+
+    const paletteObjects = JSON.parse(localStorage.getItem("palettes"));
+    const customPalettes = document.querySelectorAll('.custom-palette');
+
+    for (let index = 0; index < customPalettes.length; index++) {
+        const paletteElem = customPalettes[index];
+        paletteElem.setAttribute('nr', index);
+
+        let name = paletteElem.querySelector('.color-title-cell').innerText
+        let type = paletteElem.querySelector('.color-type-cell').innerText;
+        let color = paletteElem.querySelector('.color-code-cell').innerText;
+        let nr = paletteElem.getAttribute('nr');
+
+        paletteObjects[nr].name = name;
+        paletteObjects[nr].colorType = type;
+        paletteObjects[nr].colors = [color];
+    }
+
+    localStorage.setItem("palettes", JSON.stringify(paletteObjects));
+
+    hexToRgb();
+    updateColor(r,g,b);
+    updateRenderer();
+});
+
+const getNextElement = (cursorPosition, currentElement) => {
+    const currentElementCoord = currentElement.getBoundingClientRect();
+    const currentElementCenter = currentElementCoord.y + currentElementCoord.height / 2;
+    
+    const nextElement = (cursorPosition < currentElementCenter) ?
+      currentElement :
+      currentElement.nextElementSibling;
+    
+    return nextElement;
+  };
+
+libraryContainer.addEventListener(`dragover`, (evt) => {
+    evt.preventDefault();
+    evt.stopPropagation();
+
+    const activeElement = libraryContainer.querySelector(`.selected`);
+    const currentElement = evt.target.parentElement
+    const isMoveable = activeElement !== currentElement &&
+      currentElement.classList.contains(`custom-palette`);
+      
+    if (!isMoveable) {
+      return;
+    }
+
+    const nextElement = getNextElement(evt.clientY, currentElement);
+
+    if (nextElement && activeElement === nextElement.previousElementSibling || activeElement === nextElement) {
+        return;
+    }
+          
+    libraryContainer.insertBefore(activeElement, nextElement);
+});
 
 function savePalette(e) {
     saveContainer.classList.remove("active");
@@ -286,7 +350,6 @@ function savePalette(e) {
     const paletteChangeBtn = document.createElement("button");
     paletteChangeBtn.classList.add("pick-palette-btn");
     paletteChangeBtn.classList.add("change-color");
-    paletteChangeBtn.setAttribute('nr', paletteObj.nr);
     paletteChangeBtn.innerHTML = `
     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M12.8701 3.60447C13.0429 3.41283 13.2481 3.26081 13.4739 3.1571C13.6997 3.05338 13.9417 3 14.1861 3C14.4306 3 14.6726 3.05338 14.8984 3.1571C15.1242 3.26081 15.3293 3.41283 15.5022 3.60447C15.675 3.79611 15.8121 4.02362 15.9056 4.27401C15.9991 4.5244 16.0473 4.79277 16.0473 5.06379C16.0473 5.33481 15.9991 5.60317 15.9056 5.85356C15.8121 6.10395 15.675 6.33146 15.5022 6.5231L6.61905 16.3735L3 17.468L3.98701 13.4549L12.8701 3.60447Z" stroke="#8D8D8D" stroke-linecap="round" stroke-linejoin="round"/>
@@ -296,7 +359,6 @@ function savePalette(e) {
     const paletteDeleteBtn = document.createElement("button");
     paletteDeleteBtn.classList.add("pick-palette-btn");
     paletteDeleteBtn.classList.add("delete-color");
-    paletteDeleteBtn.setAttribute('nr', paletteObj.nr);
     paletteDeleteBtn.innerHTML = `
     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path fill-rule="evenodd" clip-rule="evenodd" d="M15 4H4L5.26923 16H13.7308L15 4ZM13.8887 5H5.11135L6.16904 15H12.831L13.8887 5Z" fill="#8D8D8D"/>
@@ -307,7 +369,7 @@ function savePalette(e) {
     //Attach event to the btn
     paletteDeleteBtn.addEventListener("click", e => {
         const paletteObjects = JSON.parse(localStorage.getItem("palettes"));
-        const findIndex = e.target.getAttribute('nr');
+        const findIndex = e.target.parentElement.getAttribute('nr');
         const colorRow = document.querySelector(`.custom-palette[nr="${findIndex}"]`);
         colorRow.remove();
         
@@ -315,22 +377,10 @@ function savePalette(e) {
         localStorage.setItem("palettes", JSON.stringify(paletteObjects));
 
         const customPalettes = document.querySelectorAll('.custom-palette');
-        const deleteBtns = document.querySelectorAll('.delete-color');
-        const changeBtns = document.querySelectorAll('.change-color');
 
         for (let index = 0; index < paletteObjects.length; index++) {
             const element = paletteObjects[index];
             element.nr = index;
-        }
-
-        for (let index = 0; index < deleteBtns.length; index++) {
-            const element = deleteBtns[index];
-            element.setAttribute('nr', index);
-        }
-
-        for (let index = 0; index < changeBtns.length; index++) {
-            const element = changeBtns[index];
-            element.setAttribute('nr', index);
         }
 
         for (let index = 0; index < customPalettes.length; index++) {
@@ -356,7 +406,7 @@ function savePalette(e) {
         changePopupBtn.innerHTML = 'Изменить';
         changePopup.firstElementChild.appendChild(changePopupBtn);
         savePopuBtn.classList.add('disable');
-        const nr = e.target.getAttribute('nr');
+        const nr = e.target.parentElement.getAttribute('nr');
 
         const currentPallete = document.querySelector(`.custom-palette[nr='${nr}']`);
         const currentPalleteColor = currentPallete.querySelector('.color-title-cell');
@@ -373,6 +423,7 @@ function savePalette(e) {
         changePopupColor.style.backgroundColor = currentPalleteCode.innerText;
         
         changePopupBtn.addEventListener("click", e => {
+            const paletteObjects = JSON.parse(localStorage.getItem("palettes"));
             const name = document.querySelector('.save-name').value;
             const type = document.querySelector('.save-type').value;
             const color = document.querySelector('.color-hex').innerText;
@@ -405,6 +456,13 @@ function savePalette(e) {
     palette.appendChild(paletteChangeBtn);
     palette.appendChild(paletteDeleteBtn);
     libraryContainer.appendChild(palette);
+
+    const paletteElems = libraryContainer.querySelectorAll(`.custom-palette`);
+
+    for (const palette of paletteElems) {
+        palette.draggable = true;
+    }
+
     closePalette();
 }
 
@@ -485,7 +543,7 @@ function getLocal() {
 
             //Attach event to the btn
             paletteDeleteBtn.addEventListener("click", e => {
-                const findIndex = e.target.getAttribute('nr');
+                const findIndex = e.target.parentElement.getAttribute('nr');
                 const colorRow = document.querySelector(`.custom-palette[nr="${findIndex}"]`);
                 colorRow.remove();
                 
@@ -493,22 +551,10 @@ function getLocal() {
                 localStorage.setItem("palettes", JSON.stringify(paletteObjects));
 
                 const customPalettes = document.querySelectorAll('.custom-palette');
-                const deleteBtns = document.querySelectorAll('.delete-color');
-                const changeBtns = document.querySelectorAll('.change-color');
 
                 for (let index = 0; index < paletteObjects.length; index++) {
                     const element = paletteObjects[index];
                     element.nr = index;
-                }
-
-                for (let index = 0; index < deleteBtns.length; index++) {
-                    const element = deleteBtns[index];
-                    element.setAttribute('nr', index);
-                }
-
-                for (let index = 0; index < changeBtns.length; index++) {
-                    const element = changeBtns[index];
-                    element.setAttribute('nr', index);
                 }
 
                 for (let index = 0; index < customPalettes.length; index++) {
@@ -532,7 +578,7 @@ function getLocal() {
                 changePopupBtn.innerHTML = 'Изменить';
                 changePopup.firstElementChild.appendChild(changePopupBtn);
                 savePopuBtn.classList.add('disable');
-                const nr = e.target.getAttribute('nr');
+                const nr = e.target.parentElement.getAttribute('nr');
         
                 const currentPallete = document.querySelector(`.custom-palette[nr='${nr}']`);
                 const currentPalleteColor = currentPallete.querySelector('.color-title-cell');
@@ -549,6 +595,7 @@ function getLocal() {
                 changePopupColor.style.backgroundColor = currentPalleteCode.innerText;
                 
                 changePopupBtn.addEventListener("click", e => {
+                    const paletteObjects = JSON.parse(localStorage.getItem("palettes"));
                     const name = document.querySelector('.save-name').value;
                     const type = document.querySelector('.save-type').value;
                     const color = document.querySelector('.color-hex').innerText;
@@ -580,7 +627,12 @@ function getLocal() {
             palette.appendChild(paletteChangeBtn);
             palette.appendChild(paletteDeleteBtn);
             libraryContainer.appendChild(palette);
-            closePalette();
+
+            const paletteElems = libraryContainer.querySelectorAll(`.custom-palette`);
+
+            for (const palette of paletteElems) {
+                palette.draggable = true;
+            }
         });
     }
 }
